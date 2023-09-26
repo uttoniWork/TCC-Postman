@@ -1,0 +1,524 @@
+{
+	"info": {
+		"_postman_id": "e66308f3-5672-42cb-a61a-9ee71dfedd0f",
+		"name": "TCC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14111981"
+	},
+	"item": [
+		{
+			"name": "Cadastrar usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => pm.expect(pm.response.status).to.equal(\"Created\"));\r",
+							"pm.test(\"Mensagem de usuário cadastrado\", () => pm.expect(pm.response.json().message).to.equal(\"Cadastro realizado com sucesso\"));\r",
+							"pm.test(\"ID gerado\", () => pm.expect(pm.response.json()._id).to.be.not.null );\r",
+							"\r",
+							"const id_usuario = pm.response.json()._id\r",
+							"pm.collectionVariables.set(\"id_usuario\", id_usuario)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Lucas Pereira\",\r\n  \"email\": \"lucas34@gmail.com\",\r\n  \"password\": \"teste\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Falha ao cadastrar usuário já existente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => \r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\")\r",
+							");\r",
+							"\r",
+							"pm.test(\"Mensagem de usuário cadastrado\", () => \r",
+							"    pm.expect(pm.response.json().message).to.equal(\"Este email já está sendo usado\")\r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Lucas Pereira\",\r\n  \"email\": \"lucas34@gmail.com\",\r\n  \"password\": \"teste\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar senha do usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => pm.expect(pm.response.status).to.equal(\"OK\"));\r",
+							"pm.test(\"Mensagem de usuário cadastrado\", () => pm.expect(pm.response.json().message).to.equal(\"Registro alterado com sucesso\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Lucas Pereira\",\r\n  \"email\": \"lucas34@gmail.com\",\r\n  \"password\": \"teste alterado\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios/{{id_usuario}}",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios",
+						"{{id_usuario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Falha ao atualizar usuário passando email inválido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => pm.expect(pm.response.status).to.equal(\"Bad Request\"));\r",
+							"pm.test(\"Mensagem de usuário cadastrado\", () => \r",
+							"    pm.expect(pm.response.json().email).to.equal(\"email deve ser um email válido\")\r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Uttoni\",\r\n  \"email\": \"email_invalido\",\r\n  \"password\": \"teste\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios/{{id_usuario}}",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios",
+						"{{id_usuario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => \r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\")\r",
+							");\r",
+							"pm.test(\"Nome correto\", () => \r",
+							"    pm.expect(pm.response.json().nome).to.equal(\"Lucas Pereira\")\r",
+							");\r",
+							"pm.test(\"Email correto\", () => \r",
+							"    pm.expect(pm.response.json().email).to.equal(\"lucas34@gmail.com\")\r",
+							");\r",
+							"pm.test(\"Senha correta\", () => \r",
+							"    pm.expect(pm.response.json().password).to.equal(\"teste alterado\")\r",
+							");\r",
+							"pm.test(\"Status de administrador correto\", () => \r",
+							"    pm.expect(pm.response.json().administrador).to.equal(\"true\")\r",
+							");\r",
+							"\r",
+							"const id_usuario = pm.collectionVariables.get(\"id_usuario\");\r",
+							"pm.test(\"ID correto\", () => \r",
+							"    pm.expect(pm.response.json()._id).to.equal(id_usuario)\r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios/{{id_usuario}}",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios",
+						"{{id_usuario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar usuários por email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => \r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\")\r",
+							");\r",
+							"pm.test(\"Status success\", () => \r",
+							"    pm.expect(pm.response.json().quantidade).to.equal(1)\r",
+							");\r",
+							"pm.test(\"Nome correto\", () => \r",
+							"    pm.expect(pm.response.json().usuarios[0].nome).to.equal(\"Lucas Pereira\")\r",
+							");\r",
+							"pm.test(\"Email correto\", () => \r",
+							"    pm.expect(pm.response.json().usuarios[0].email).to.equal(\"lucas34@gmail.com\")\r",
+							");\r",
+							"pm.test(\"Senha correta\", () => \r",
+							"    pm.expect(pm.response.json().usuarios[0].password).to.equal(\"teste alterado\")\r",
+							");\r",
+							"pm.test(\"Status de administrador correto\", () => \r",
+							"    pm.expect(pm.response.json().usuarios[0].administrador).to.equal(\"true\")\r",
+							");\r",
+							"\r",
+							"const id_usuario = pm.collectionVariables.get(\"id_usuario\");\r",
+							"pm.test(\"ID correto\", () => \r",
+							"    pm.expect(pm.response.json().usuarios[0]._id).to.equal(id_usuario)\r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios?email=lucas34@gmail.com",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "lucas34@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar usuários por email não cadastrado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => \r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\")\r",
+							");\r",
+							"\r",
+							"pm.test(\"Não foram encontrados usuários com o email buscado\", () => \r",
+							"    pm.expect(pm.response.json().quantidade).to.equal(0)\r",
+							");\r",
+							"\r",
+							"pm.test(\"Lista de usuários retornados vazia\", () => \r",
+							"    pm.expect(pm.response.json().usuarios.length).to.equal(0)\r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios/?email=email_invalido@gmail.com",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios",
+						""
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "email_invalido@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar administradores",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => \r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\")\r",
+							");\r",
+							"\r",
+							"pm.test(\"Existem administradores cadastrados\", () => \r",
+							"    pm.expect(pm.response.json().quantidade).to.greaterThan(0)\r",
+							");\r",
+							"\r",
+							"pm.test(\"Existe um usuário com nome Lucas Pereira\", () => {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var nomes = jsonData.usuarios.map((usuario) => usuario.nome);\r",
+							"    pm.expect(nomes.includes(\"Lucas Pereira\")).to.equal(true);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios?administrador=true",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios"
+					],
+					"query": [
+						{
+							"key": "administrador",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Falha ao deletar usuário não cadastrado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => pm.expect(pm.response.status).to.equal(\"OK\"));\r",
+							"pm.test(\"Mensagem de registro não excluído\", () => \r",
+							"    pm.expect(pm.response.json().message).to.equal(\"Nenhum registro excluído\")\r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios/id_invalido",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios",
+						"id_invalido"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status success\", () => pm.expect(pm.response.status).to.equal(\"OK\"));\r",
+							"pm.test(\"Mensagem de usuário cadastrado\", () => pm.expect(pm.response.json().message).to.equal(\"Registro excluído com sucesso\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/usuarios/{{id_usuario}}",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"usuarios",
+						"{{id_usuario}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "id_usuario",
+			"value": ""
+		}
+	]
+}
